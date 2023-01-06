@@ -18,7 +18,7 @@ const Search = (): JSX.Element => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.trim();
     setTerm(value);
-
+    if (value === "") return;
     getSearch(value);
   };
 
