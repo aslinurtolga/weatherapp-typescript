@@ -28,13 +28,14 @@ const Search = (): JSX.Element => {
         <div>
           <input type="text" value={term} onChange={handleChange} />
           <ul>
-            {options?.map((optionCity: optionCityType, index: number) => (
-              <li key={index}>
-                <button>
-                  {optionCity.name} {optionCity.country}
-                </button>
-              </li>
-            ))}
+            {options.length > 1 &&
+              options?.map((optionCity: optionCityType, index: number) => (
+                <li key={index}>
+                  <button>
+                    {optionCity.name} {optionCity.country}
+                  </button>
+                </li>
+              ))}
           </ul>
 
           <button>Search</button>
