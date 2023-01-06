@@ -1,10 +1,11 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useState, useEffect } from "react";
 import { optionCityType } from "../types";
 
 const Search = (): JSX.Element => {
   const API_KEY = process.env.REACT_APP_API_KEY;
   const [term, setTerm] = useState<string>("");
   const [options, setOptions] = useState<[]>([]);
+  const [city, setCity] = useState<optionCityType | null>();
 
   const getSearch = (value: string) => {
     fetch(
@@ -20,6 +21,27 @@ const Search = (): JSX.Element => {
 
     getSearch(value);
   };
+
+  const handleSubmit = () => {
+    if (!city) return;
+    getWeatherData(city);
+  };
+
+  const getWeatherData = (city: optionCityType) => {
+    fetch(
+      `https://api.openweathermap.org/data/2.5/forecast?lat=${city.lat}&lon=${city.lon}&units=metric&appid=${API_KEY}`
+    )
+      .then((res) => res.json())
+      .then((data) => console.log(data));
+  };
+
+  useEffect(() => {
+    if (city) {
+      setTerm(city.name);
+      setOptions([]);
+    }
+  }, [city]);
+
   return (
     <div>
       <section>
@@ -31,14 +53,14 @@ const Search = (): JSX.Element => {
             {options.length > 1 &&
               options?.map((optionCity: optionCityType, index: number) => (
                 <li key={index}>
-                  <button>
+                  <button onClick={() => setCity(optionCity)}>
                     {optionCity.name} {optionCity.country}
                   </button>
                 </li>
               ))}
           </ul>
 
-          <button>Search</button>
+          <button onClick={handleSubmit}>Search</button>
         </div>
       </section>
     </div>
