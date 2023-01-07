@@ -1,47 +1,23 @@
-import React, { ChangeEvent, useState, useEffect } from "react";
+import { ChangeEvent } from "react";
 import { optionCityType } from "../types";
 
-const Search = (): JSX.Element => {
-  const API_KEY = process.env.REACT_APP_API_KEY;
-  const [term, setTerm] = useState<string>("");
-  const [options, setOptions] = useState<[]>([]);
-  const [city, setCity] = useState<optionCityType | null>();
+type Props = {
+  term: string;
+  options: [];
+  handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  handleSubmit: () => void;
+  setCity: React.Dispatch<
+    React.SetStateAction<optionCityType | null | undefined>
+  >;
+};
 
-  const getSearch = (value: string) => {
-    fetch(
-      `http://api.openweathermap.org/geo/1.0/direct?q=${value}&limit=5&appid=${API_KEY}`
-    )
-      .then((res) => res.json())
-      .then((data) => setOptions(data));
-  };
-
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.trim();
-    setTerm(value);
-    if (value === "") return;
-    getSearch(value);
-  };
-
-  const handleSubmit = () => {
-    if (!city) return;
-    getWeatherData(city);
-  };
-
-  const getWeatherData = (city: optionCityType) => {
-    fetch(
-      `https://api.openweathermap.org/data/2.5/forecast?lat=${city.lat}&lon=${city.lon}&units=metric&appid=${API_KEY}`
-    )
-      .then((res) => res.json())
-      .then((data) => console.log(data));
-  };
-
-  useEffect(() => {
-    if (city) {
-      setTerm(city.name);
-      setOptions([]);
-    }
-  }, [city]);
-
+const Search = ({
+  term,
+  options,
+  handleChange,
+  handleSubmit,
+  setCity,
+}: Props): JSX.Element => {
   return (
     <div>
       <section>
@@ -51,7 +27,7 @@ const Search = (): JSX.Element => {
           <input type="text" value={term} onChange={handleChange} />
           <ul>
             {options.length > 1 &&
-              options?.map((optionCity: optionCityType, index: number) => (
+              options.map((optionCity: optionCityType, index: number) => (
                 <li key={index}>
                   <button onClick={() => setCity(optionCity)}>
                     {optionCity.name} {optionCity.country}
@@ -59,7 +35,6 @@ const Search = (): JSX.Element => {
                 </li>
               ))}
           </ul>
-
           <button onClick={handleSubmit}>Search</button>
         </div>
       </section>
