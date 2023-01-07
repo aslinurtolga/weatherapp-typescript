@@ -7,13 +7,12 @@ type Props = {
     React.SetStateAction<forecastType | null | undefined>
   >;
 };
-
 const Forecast = ({ data, setForecast }: Props) => {
   const today = data.list[0];
   console.log(data);
   return (
     <div className="anaDiv">
-      <div>
+      <div className="w-[300px]">
         <section className="text-center">
           <h2 className="text-2xl font-black">
             {data.name} <span className="font-thin ml-2">{data.country}</span>
@@ -29,6 +28,17 @@ const Forecast = ({ data, setForecast }: Props) => {
             <sup>o</sup> L:
             {Math.floor(today.main.temp_min)} <sup>o</sup>
           </p>
+        </section>
+        <section className="flex">
+          {data.list.map((item, index) => (
+            <div key={index}>
+              <p>{index === 0 ? "Now" : new Date(item.dt * 1000).getHours()}</p>
+              <img
+                alt="icon"
+                src={`http://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png`}
+              />
+            </div>
+          ))}
         </section>
       </div>
     </div>
