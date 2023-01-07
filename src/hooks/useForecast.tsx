@@ -1,11 +1,13 @@
-import { ChangeEvent, useState, useEffect } from "react";
-import { optionCityType, optionForecastType } from "../types";
+import { ChangeEvent, useEffect, useState } from "react";
+import { optionCityType, forecastType } from "../types";
+
 const useForecast = () => {
   const API_KEY = process.env.REACT_APP_API_KEY;
+
   const [term, setTerm] = useState<string>("");
   const [options, setOptions] = useState<[]>([]);
   const [city, setCity] = useState<optionCityType | null>();
-  const [forecast, setForecast] = useState<optionForecastType | null>();
+  const [forecast, setForecast] = useState<forecastType | null>();
 
   const getSearch = (value: string) => {
     fetch(
@@ -24,6 +26,7 @@ const useForecast = () => {
 
   const handleSubmit = () => {
     if (!city) return;
+
     getWeatherData(city);
   };
 
@@ -37,6 +40,7 @@ const useForecast = () => {
           ...data.city,
           list: data.list.slice(0, 16),
         };
+        setForecast(forecastData);
       });
   };
 
@@ -50,9 +54,11 @@ const useForecast = () => {
   return {
     term,
     options,
+    forecast,
     handleChange,
     handleSubmit,
     setCity,
+    setForecast,
   };
 };
 
